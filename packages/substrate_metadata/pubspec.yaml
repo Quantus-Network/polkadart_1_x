@@ -10,7 +10,11 @@ environment:
 
 dependencies:
   pointycastle: ^4.0.0 # BSD-3-Clause
-  polkadart_scale_codec: ^2.0.0
+  polkadart_scale_codec:
+    git:
+      url: https://github.com/Quantus-Network/polkadart_1_x.git
+      ref: 1_1_0_quantus_3
+      path: packages/polkadart_scale_codec
   hashlib_codecs: ^3.0.1
 
 dev_dependencies:
