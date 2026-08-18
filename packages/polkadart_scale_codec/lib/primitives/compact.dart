@@ -186,12 +186,11 @@ class CompactCodec with Codec<int> {
 /// than the remaining input is malformed. Checking before allocating stops a
 /// short hostile payload from claiming gigabytes.
 void assertSequenceFits(int length, Input input) {
-  if (length < 0) {
-    throw AssertionException('Sequence length $length is negative.');
-  }
+  assertion(length >= 0, 'Sequence length $length is negative.');
   final remaining = input.remainingLength;
-  if (remaining != null && length > remaining) {
-    throw AssertionException(
+  if (remaining != null) {
+    assertion(
+      length <= remaining,
       'Sequence claims $length elements but only $remaining bytes remain.',
     );
   }

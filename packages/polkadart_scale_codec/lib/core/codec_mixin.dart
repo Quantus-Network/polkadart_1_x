@@ -29,5 +29,5 @@ mixin Codec<E> {
   /// and find whether any of it is non-zero size or not.
   ///
   /// Helps to avoid encoding or decoding the values who encapsulates the empty Composite Codec inside one another.
-  bool isSizeZero();
+  bool isSizeZero() => false;
 }
