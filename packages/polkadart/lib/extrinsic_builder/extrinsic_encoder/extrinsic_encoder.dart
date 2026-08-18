@@ -94,39 +94,28 @@ class ExtrinsicEncoder {
   /// - Address32 (index 3): [u8; 32]
   /// - Address20 (index 4): [u8; 20]
   void _encodeMultiAddress(Uint8List address, Output output) {
-    if (address.length != 32) {
-      throw EncodingError(
-        'Only MultiAddress::Id (32-byte AccountId) is supported, got ${address.length} bytes',
-      );
+    switch (address.length) {
+      case 32:
+        output.pushByte(0x00);
+        output.write(address);
+        break;
+      case 20:
+        output.pushByte(0x04);
+        output.write(address);
+        break;
+      default:
+        output.pushByte(0x02);
+        CompactCodec.codec.encodeTo(address.length, output);
+        output.write(address);
     }
-    output.pushByte(0x00);
-    output.write(address);
   }
 
-  /// Encode MultiSignature (or a chain-specific signature enum).
+  /// Encode a signature enum variant, then the blob as-is.
   ///
-  /// Substrate `MultiSignature` variants:
-  /// - Ed25519 (index 0): [u8; 64]
-  /// - Sr25519 (index 1): [u8; 64]
-  /// - Ecdsa (index 2): [u8; 65]
-  ///
-  /// Anything else is [SignatureType.custom] and uses that type's own byte.
-  /// The blob after the variant byte is written as-is — length is not interpreted.
+  /// Substrate `MultiSignature`: Ed25519 = 0, Sr25519 = 1, Ecdsa = 2.
+  /// Other runtimes pass [SignatureType.custom]. Length is not interpreted.
   void _encodeMultiSignature(Uint8List signature, SignatureType signatureType, Output output) {
-    if (signatureType.isCustom) {
-      output.pushByte(signatureType.type);
-    } else {
-      switch (signatureType) {
-        case SignatureType.ed25519:
-          output.pushByte(0x00);
-        case SignatureType.sr25519:
-          output.pushByte(0x01);
-        case SignatureType.ecdsa:
-          output.pushByte(0x02);
-        default:
-          throw EncodingError('Unknown built-in signature type: $signatureType');
-      }
-    }
+    output.pushByte(signatureType.type);
     output.write(signature);
   }
 

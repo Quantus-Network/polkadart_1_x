@@ -93,7 +93,7 @@ class Multisig {
 
     final Uint8List txHash = await extrinsicBuilder.signBuildAndSubmit(
       signingCallback: signingCallback,
-      signatureScheme: const Sr25519SignatureScheme(),
+      signatureType: SignatureType.sr25519,
       provider: provider,
       signerAddress: depositorAddress,
     );
@@ -682,7 +682,7 @@ class Multisig {
 
     final txHash = await extrinsic.signBuildAndSubmit(
       signingCallback: signCallback,
-      signatureScheme: const Sr25519SignatureScheme(),
+      signatureType: SignatureType.sr25519,
       provider: provider,
       signerAddress: signerAddress,
     );

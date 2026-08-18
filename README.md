@@ -2,7 +2,7 @@
 <img src="https://raw.githubusercontent.com/leonardocustodio/polkadart/main/.github/assets/polkadart-logo.png" height="120" alt="Polkadart" />
 </p>
 
-This is the Quantus `polkadart_1_x` fork of polkadart 1.1.0. The Dart package names are unchanged (`polkadart`, `ss58`, …). The only intentional fork surface is `ExtrinsicSignatureScheme`: the encoder writes a caller-supplied variant byte plus an opaque signature blob, and MultiAddress is `Id` only.
+This is a 1.1.0 fork whose only API addition is `SignatureType.custom`: the encoder writes that variant byte and the signature as an opaque blob. Dart package names are unchanged.
 
 <h3 align="center">
   The Complete Dart SDK for Polkadot & Substrate

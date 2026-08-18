@@ -20,17 +20,17 @@ dependencies:
   polkadart:
     git:
       url: https://github.com/Quantus-Network/polkadart_1_x.git
-      ref: 1_1_0_quantus_4
+      ref: 1_1_0_quantus_5
       path: packages/polkadart
   substrate_metadata:
     git:
       url: https://github.com/Quantus-Network/polkadart_1_x.git
-      ref: 1_1_0_quantus_4
+      ref: 1_1_0_quantus_5
       path: packages/substrate_metadata
   polkadart_scale_codec:
     git:
       url: https://github.com/Quantus-Network/polkadart_1_x.git
-      ref: 1_1_0_quantus_4
+      ref: 1_1_0_quantus_5
       path: packages/polkadart_scale_codec
 
 dev_dependencies:

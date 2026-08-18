@@ -69,7 +69,7 @@ class ContractBuilder {
     final encodedExtrinsic = await builder.signAndBuild(
       provider: provider,
       signerAddress: signer.address,
-      signatureScheme: const Sr25519SignatureScheme(),
+      signatureType: SignatureType.sr25519,
       signingCallback: (Uint8List payload) {
         // The payload is already hashed if > 256 bytes by the ExtrinsicBuilder
         return signer.sign(payload);

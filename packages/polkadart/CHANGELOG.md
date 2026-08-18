@@ -3,15 +3,14 @@
 Quantus fork of 1.1.0 (`polkadart_1_x`).
 
 ### Added
-- `SignatureType.custom` — extend the Substrate MultiSignature set with a caller-supplied variant byte (no length-based inference, no default to Sr25519)
-- `ExtrinsicSignatureScheme` — thin wrapper around [SignatureType] for `signAndBuild` / `attachSignature`
-- `ExtrinsicBuilder.attachSignature` and `getRawSigningPayload` for hardware-wallet and fee-estimation flows
+- `SignatureType.custom` — any SCALE signature-enum index; the encoder writes that byte and the blob as-is (no length-based type inference)
+- `ExtrinsicBuilder.attachSignature` and `getRawSigningPayload`
 - `scale_codec.dart` compatibility re-export for generated 0.7 bindings
 - Sequence-length bound before allocation (hostile compact prefixes)
 - `Compact<()>` treated as zero bytes in `polkadart_cli`
 
 ### Changed
-- MultiAddress encoding is `Id` only; any other address length throws
+- `signAndBuild` takes an explicit [SignatureType] instead of inferring it from signature length
 
 ## 1.1.0
 

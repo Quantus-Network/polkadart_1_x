@@ -362,7 +362,7 @@ class ExtrinsicBuilder {
     required final Provider provider,
     required final String signerAddress,
     required final SigningCallback signingCallback,
-    required final ExtrinsicSignatureScheme signatureScheme,
+    required final SignatureType signatureType,
   }) async {
     await _fetchNonceIfNeeded(provider: provider, address: signerAddress);
 
@@ -377,7 +377,7 @@ class ExtrinsicBuilder {
     return attachSignature(
       signer: signerPublicKey,
       signature: signature,
-      signatureScheme: signatureScheme,
+      signatureType: signatureType,
     );
   }
 
@@ -387,7 +387,7 @@ class ExtrinsicBuilder {
   EncodedExtrinsic attachSignature({
     required final Uint8List signer,
     required final Uint8List signature,
-    required final ExtrinsicSignatureScheme signatureScheme,
+    required final SignatureType signatureType,
   }) {
     final signingBuilder = SigningBuilder(
       chainInfo: chainInfo,
@@ -398,7 +398,7 @@ class ExtrinsicBuilder {
       SignedData(
         signer: signer,
         signature: signature,
-        signatureType: signatureScheme.signatureType,
+        signatureType: signatureType,
         extensions: Map<String, dynamic>.from(_extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(_extensionBuilder.additionalSigned),
         callData: callData,
@@ -438,13 +438,13 @@ class ExtrinsicBuilder {
     required final Provider provider,
     required final String signerAddress,
     required final SigningCallback signingCallback,
-    required final ExtrinsicSignatureScheme signatureScheme,
+    required final SignatureType signatureType,
   }) async {
     final extrinsic = await signAndBuild(
       provider: provider,
       signerAddress: signerAddress,
       signingCallback: signingCallback,
-      signatureScheme: signatureScheme,
+      signatureType: signatureType,
     );
     return extrinsic.submit(provider);
   }
@@ -487,13 +487,13 @@ class ExtrinsicBuilder {
     required final Provider provider,
     required final String signerAddress,
     required final SigningCallback signingCallback,
-    required final ExtrinsicSignatureScheme signatureScheme,
+    required final SignatureType signatureType,
     required final ExtrinsicListener onStatusChange,
   }) async {
     final extrinsic = await signAndBuild(
       signerAddress: signerAddress,
       signingCallback: signingCallback,
-      signatureScheme: signatureScheme,
+      signatureType: signatureType,
       provider: provider,
     );
 
@@ -596,7 +596,7 @@ class ExtrinsicBuilder {
     required final Uint8List callData,
     required final String signerAddress,
     required final SigningCallback signingCallback,
-    required final ExtrinsicSignatureScheme signatureScheme,
+    required final SignatureType signatureType,
     final int? eraPeriod,
     final BigInt? tip,
     bool immortal = false,
@@ -629,7 +629,7 @@ class ExtrinsicBuilder {
     return builder.signBuildAndSubmit(
       provider: provider,
       signingCallback: signingCallback,
-      signatureScheme: signatureScheme,
+      signatureType: signatureType,
       signerAddress: signerAddress,
     );
   }

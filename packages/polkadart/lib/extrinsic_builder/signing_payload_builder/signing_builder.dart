@@ -22,7 +22,7 @@ class SigningBuilder {
     required final Uint8List callData,
     required final SigningCallback signingCallback,
     required final Uint8List signer,
-    required final ExtrinsicSignatureScheme signatureScheme,
+    required final SignatureType signatureType,
   }) {
     extensionBuilder.validate();
 
@@ -32,7 +32,7 @@ class SigningBuilder {
     return SignedData(
       signer: signer,
       signature: signature,
-      signatureType: signatureScheme.signatureType,
+      signatureType: signatureType,
       extensions: Map.from(extensionBuilder.extensions),
       additionalSigned: Map.from(extensionBuilder.additionalSigned),
       callData: callData,

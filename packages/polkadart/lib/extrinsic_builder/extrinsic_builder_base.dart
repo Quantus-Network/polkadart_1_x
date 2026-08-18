@@ -29,7 +29,6 @@ part 'extrinsic_encoder/extrinsic_encoder.dart';
 
 // signing_payload_builder
 part 'signing_payload_builder/signature_type_enum.dart';
-part 'signing_payload_builder/signature_scheme.dart';
 part 'signing_payload_builder/signed_data.dart';
 part 'signing_payload_builder/signing_builder.dart';
 part 'signing_payload_builder/signing_info.dart';

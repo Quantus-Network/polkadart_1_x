@@ -139,7 +139,7 @@ void main() {
         provider: provider,
         signerAddress: friday1.address,
         signingCallback: friday1.sign,
-        signatureScheme: const Sr25519SignatureScheme(),
+        signatureType: SignatureType.sr25519,
       );
 
       final actualTxHash = await encodedExtrinsic.submit(provider);
@@ -170,7 +170,7 @@ void main() {
         provider: provider,
         signerAddress: friday2.address,
         signingCallback: friday2.sign,
-        signatureScheme: const Sr25519SignatureScheme(),
+        signatureType: SignatureType.sr25519,
       );
 
       final actualTxHash = await encodedExtrinsic.submit(provider);
@@ -225,7 +225,7 @@ Future<Map<String, dynamic>> buildTransferExtrinsic({
 
   final encodedExtrinsic = await extrinsicBuilder.signAndBuild(
     signingCallback: sender.sign,
-    signatureScheme: const Sr25519SignatureScheme(),
+    signatureType: SignatureType.sr25519,
     provider: provider,
     signerAddress: sender.address,
   );
