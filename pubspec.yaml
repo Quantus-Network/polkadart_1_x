@@ -19,7 +19,7 @@ workspace:
   - packages/substrate_metadata
 
 dev_dependencies:
-  coverage: ^1.15.0
+  coverage: ^1.15.1
   melos: ^7.4.0
 
 melos:
