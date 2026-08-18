@@ -32,7 +32,7 @@ class SigningBuilder {
     return SignedData(
       signer: signer,
       signature: signature,
-      signatureVariant: signatureScheme.variantIndex,
+      signatureType: signatureScheme.signatureType,
       extensions: Map.from(extensionBuilder.extensions),
       additionalSigned: Map.from(extensionBuilder.additionalSigned),
       callData: callData,

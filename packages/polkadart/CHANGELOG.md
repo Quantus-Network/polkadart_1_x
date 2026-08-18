@@ -3,7 +3,8 @@
 Quantus fork of 1.1.0 (`polkadart_1_x`).
 
 ### Added
-- `ExtrinsicSignatureScheme` — callers supply the SCALE signature variant; the encoder writes that byte and the signature as an opaque blob (no length-based type inference)
+- `SignatureType.custom` — extend the Substrate MultiSignature set with a caller-supplied variant byte (no length-based inference, no default to Sr25519)
+- `ExtrinsicSignatureScheme` — thin wrapper around [SignatureType] for `signAndBuild` / `attachSignature`
 - `ExtrinsicBuilder.attachSignature` and `getRawSigningPayload` for hardware-wallet and fee-estimation flows
 - `scale_codec.dart` compatibility re-export for generated 0.7 bindings
 - Sequence-length bound before allocation (hostile compact prefixes)

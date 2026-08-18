@@ -175,7 +175,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -293,7 +293,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -454,7 +454,7 @@ void main() {
       final signedData = SignedData(
         signer: signer,
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -490,7 +490,7 @@ void main() {
       final signedData = SignedData(
         signer: signer,
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -528,7 +528,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: signature,
-        signatureVariant: 0,
+        signatureType: SignatureType.ed25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -564,7 +564,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: signature,
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -595,7 +595,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: Uint8List(65),
-        signatureVariant: 2,
+        signatureType: SignatureType.ecdsa,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -626,7 +626,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: signature,
-        signatureVariant: 0,
+        signatureType: const SignatureType.custom(0),
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -691,7 +691,7 @@ void main() {
       final signedData = SignedData(
         signer: signer,
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: callData,
@@ -787,7 +787,7 @@ void main() {
       final signedData = SignedData(
         signer: signer,
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: Uint8List.fromList([0x00, 0x00]),
@@ -840,7 +840,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: Map<String, dynamic>.from(extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(extensionBuilder.additionalSigned),
         callData: callData,
@@ -921,7 +921,7 @@ void main() {
       final signedData = SignedData(
         signer: Uint8List(32),
         signature: Uint8List(64),
-        signatureVariant: 1,
+        signatureType: SignatureType.sr25519,
         extensions: <String, dynamic>{}, // deliberately empty
         additionalSigned: <String, dynamic>{},
         callData: Uint8List.fromList([0x00, 0x00]),

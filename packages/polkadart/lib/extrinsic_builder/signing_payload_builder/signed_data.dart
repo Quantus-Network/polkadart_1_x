@@ -20,33 +20,18 @@ class SignedData {
   /// The actual payload that was signed (for reference/debugging)
   final Uint8List signingPayload;
 
-  /// SCALE variant index of the runtime signature enum. Never inferred from
-  /// [signature] length — a 7219-byte Dilithium blob is not Sr25519.
-  final int signatureVariant;
+  /// SCALE signature variant. Never inferred from [signature] length.
+  final SignatureType signatureType;
 
   const SignedData({
     required this.signer,
     required this.signature,
-    required this.signatureVariant,
+    required this.signatureType,
     required this.extensions,
     required this.additionalSigned,
     required this.callData,
     required this.signingPayload,
   });
-
-  /// Best-effort mapping for debug summaries. Encoding uses [signatureVariant].
-  SignatureType get signatureType {
-    switch (signatureVariant) {
-      case 0:
-        return SignatureType.ed25519;
-      case 1:
-        return SignatureType.sr25519;
-      case 2:
-        return SignatureType.ecdsa;
-      default:
-        return SignatureType.unknown;
-    }
-  }
 
   /// Was the signing payload hashed?
   bool get wasPayloadHashed => signingPayload.length == 32;

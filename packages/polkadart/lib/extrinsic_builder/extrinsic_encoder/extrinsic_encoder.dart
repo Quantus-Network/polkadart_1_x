@@ -73,8 +73,8 @@ class ExtrinsicEncoder {
     // 2. Encode signer address (MultiAddress)
     _encodeMultiAddress(signedData.signer, output);
 
-    // 3. Encode signature (runtime enum variant + opaque blob)
-    _encodeMultiSignature(signedData.signature, signedData.signatureVariant, output);
+    // 3. Encode signature (MultiSignature / custom variant + opaque blob)
+    _encodeMultiSignature(signedData.signature, signedData.signatureType, output);
 
     // 4. Encode extension values (in metadata order, skip zero-sized)
     _encodeExtensions(signedData.extensions, output);
@@ -103,12 +103,30 @@ class ExtrinsicEncoder {
     output.write(address);
   }
 
-  /// Encode the runtime signature enum: one variant byte, then the opaque blob.
-  void _encodeMultiSignature(Uint8List signature, int variant, Output output) {
-    if (variant < 0 || variant > 255) {
-      throw EncodingError('Signature variant $variant is not a u8');
+  /// Encode MultiSignature (or a chain-specific signature enum).
+  ///
+  /// Substrate `MultiSignature` variants:
+  /// - Ed25519 (index 0): [u8; 64]
+  /// - Sr25519 (index 1): [u8; 64]
+  /// - Ecdsa (index 2): [u8; 65]
+  ///
+  /// Anything else is [SignatureType.custom] and uses that type's own byte.
+  /// The blob after the variant byte is written as-is — length is not interpreted.
+  void _encodeMultiSignature(Uint8List signature, SignatureType signatureType, Output output) {
+    if (signatureType.isCustom) {
+      output.pushByte(signatureType.type);
+    } else {
+      switch (signatureType) {
+        case SignatureType.ed25519:
+          output.pushByte(0x00);
+        case SignatureType.sr25519:
+          output.pushByte(0x01);
+        case SignatureType.ecdsa:
+          output.pushByte(0x02);
+        default:
+          throw EncodingError('Unknown built-in signature type: $signatureType');
+      }
     }
-    output.pushByte(variant);
     output.write(signature);
   }
 

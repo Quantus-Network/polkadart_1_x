@@ -398,7 +398,7 @@ class ExtrinsicBuilder {
       SignedData(
         signer: signer,
         signature: signature,
-        signatureVariant: signatureScheme.variantIndex,
+        signatureType: signatureScheme.signatureType,
         extensions: Map<String, dynamic>.from(_extensionBuilder.extensions),
         additionalSigned: Map<String, dynamic>.from(_extensionBuilder.additionalSigned),
         callData: callData,
