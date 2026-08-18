@@ -1,0 +1,48 @@
+name: polkadart_workspace
+repository: https://github.com/leonardocustodio/polkadart
+publish_to: none
+environment:
+  sdk: ^3.8.0
+
+workspace:
+  - packages/ink_abi
+  - packages/ink_cli
+  - packages/polkadart
+  - packages/polkadart_cli
+  - packages/polkadart_keyring
+  - packages/polkadart_scale_codec
+  - packages/secp256k1_ecdsa
+  - packages/smoldot
+  - packages/sr25519
+  - packages/ss58
+  - packages/substrate_bip39
+  - packages/substrate_metadata
+
+dev_dependencies:
+  coverage: ^1.15.0
+  melos: ^7.4.0
+
+melos:
+  scripts:
+    fetch_dependencies:
+      description: Run dart pub get in a specific package to pre-fetch all the packages.
+      run: dart run melos exec --scope="${SCOPE:-*}" -c 1 -- "dart pub get"
+      select-package:
+        flutter: false
+
+    test:
+      description: Run tests excluding chain tests (chain tests require local data setup)
+      run: dart run melos exec --scope="${SCOPE:-*}" -c 1 -- 'dart test --no-chain-stack-traces --ignore-timeouts --coverage="coverage" --concurrency=1 --exclude-tags=chain'
+
+    test:chain:
+      description: Run chain tests only
+      run: dart test packages/substrate_metadata/test/chain_tests/ --no-chain-stack-traces --concurrency=1
+
+    coverage:
+      run: dart run melos exec --scope="${SCOPE:-*}" -c 1 -- 'dart run coverage:format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib'
+
+    format:
+      run: dart run melos exec --scope="${SCOPE:-*}" -c 1 -- 'dart format . --set-exit-if-changed'
+
+    analyze:
+      run: dart run melos exec --scope="${SCOPE:-*}" -c 1 -- 'dart analyze --fatal-infos .'

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+
+  # CI service - runs full CI pipeline (fetch_dependencies, format, analyze, test)
+  ci:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: polkadart-ci
+    command: sh -c "dart run melos fetch_dependencies && dart run melos run format && dart run melos run analyze && dart run melos run test && dart run melos run test:chain"
+    environment:
+      - MELOS_SDK_PATH=/usr/lib/dart

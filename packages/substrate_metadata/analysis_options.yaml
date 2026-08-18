@@ -1,0 +1,20 @@
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    constant_identifier_names: false
+    overridden_fields: false
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+
+formatter:
+  page_width: 100
+
+analyzer:
+  errors:
+    use_string_in_part_of_directives: ignore
+    unnecessary_library_name: ignore
+    unnecessary_to_list_in_spreads: ignore
+    type_literal_in_constant_pattern: ignore
+    unintended_html_in_doc_comment: ignore

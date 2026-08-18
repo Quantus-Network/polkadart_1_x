@@ -1,0 +1,217 @@
+name: Build and Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    paths:
+      - "!**.md"
+      - "!.github/workflows/**"
+      - "packages/**"
+      - ".github/workflows/tests.yml"
+  push:
+    branches:
+      - main
+
+# Cancel outdated workflow runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Detect which packages have changes
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    # Skip if PR has 'skip-ci' label
+    if: |
+      github.event_name == 'push' ||
+      !contains(github.event.pull_request.labels.*.name, 'skip-ci')
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+      any_changed: ${{ steps.filter.outputs.changes != '[]' && steps.filter.outputs.changes != '' }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+      
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            ink_abi:
+              - 'packages/ink_abi/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            polkadart:
+              - 'packages/polkadart/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            polkadart_cli:
+              - 'packages/polkadart_cli/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            polkadart_example:
+              - 'apps/examples/**'
+              - 'packages/polkadart/**'
+              - 'packages/polkadart_cli/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            polkadart_keyring:
+              - 'packages/polkadart_keyring/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            polkadart_scale_codec:
+              - 'packages/polkadart_scale_codec/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            secp256k1_ecdsa:
+              - 'packages/secp256k1_ecdsa/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            ss58:
+              - 'packages/ss58/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            sr25519:
+              - 'packages/sr25519/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            substrate_bip39:
+              - 'packages/substrate_bip39/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            substrate_metadata:
+              - 'packages/substrate_metadata/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+            ink_cli:
+              - 'packages/ink_cli/**'
+              - 'pubspec.yaml'
+              - 'melos.yaml'
+
+  # Run tests only for changed packages
+  test:
+    needs: changes
+    if: ${{ needs.changes.outputs.any_changed == 'true' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.changes.outputs.packages) }}
+    
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+          lfs: true
+
+      # Cache Git LFS objects
+      - name: Cache Git LFS
+        uses: actions/cache@v5
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.gitattributes', 'chain/**') }}
+          restore-keys: |
+            ${{ runner.os }}-lfs-
+
+      - name: Git LFS Pull
+        run: git lfs pull
+
+      # Cache Flutter SDK
+      - name: Cache Flutter SDK
+        id: flutter-cache
+        uses: actions/cache@v5
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter-stable-${{ hashFiles('.github/workflows/tests_optimized.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-stable-
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      # Cache pub dependencies
+      - name: Cache pub dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.pub-cache
+            **/.dart_tool
+            **/.packages
+          key: ${{ runner.os }}-pub-${{ matrix.package }}-${{ hashFiles('**/pubspec.lock', '**/pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-${{ matrix.package }}-
+            ${{ runner.os }}-pub-
+
+      # Cache melos
+      - name: Cache melos
+        uses: actions/cache@v5
+        with:
+          path: |
+            .melos_tool
+            **/pubspec_overrides.yaml
+          key: ${{ runner.os }}-melos-${{ hashFiles('melos.yaml', 'pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-melos-
+
+      - name: Install dependencies
+        run: |
+          echo "MELOS_SDK_PATH=$MELOS_SDK_PATH" >> "${GITHUB_ENV}"
+          dart pub get
+          dart run melos bootstrap --scope="${{ matrix.package }}"
+        env:
+          MELOS_SDK_PATH: ${{ env.FLUTTER_ROOT }}
+
+      - name: Generate Files for polkadart_example
+        if: ${{ matrix.package == 'polkadart_example' }}
+        run: |
+          cd apps/examples
+          dart run polkadart_cli:generate -v
+          cd ../..
+
+      - name: Check format
+        run: |
+          SCOPE="${{ matrix.package }}" dart run melos run format
+
+      - name: Analyze
+        run: |
+          SCOPE="${{ matrix.package }}" dart run melos run analyze
+
+      - name: Run tests
+        run: |
+          SCOPE="${{ matrix.package }}" dart run melos run test
+
+      - name: Generate coverage
+        run: |
+          SCOPE="${{ matrix.package }}" dart run melos run coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ matrix.package }}
+          directory: ./packages/${{ matrix.package }}/coverage
+          fail_ci_if_error: false
+
+  # Summary job for branch protection
+  test-summary:
+    needs: [changes, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          if [ "${{ needs.changes.outputs.any_changed }}" != "true" ]; then
+            echo "✅ No packages changed - skipping tests"
+            exit 0
+          fi
+          
+          if [ "${{ needs.test.result }}" == "success" ] || [ "${{ needs.test.result }}" == "skipped" ]; then
+            echo "✅ All tests passed"
+            exit 0
+          else
+            echo "❌ Tests failed"
+            exit 1
+          fi

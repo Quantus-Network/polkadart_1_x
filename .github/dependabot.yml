@@ -1,0 +1,29 @@
+version: 2
+enable-beta-ecosystems: true
+updates:
+  # Update github actions:
+  - package-ecosystem: github-actions
+    directory: '/'
+    labels: ["type: dependencies"]
+    assignees: ["leonardocustodio"]
+    reviewers: ["leonardocustodio"]
+    schedule:
+      interval: weekly
+      
+  # Update flutter dependencies:
+  - package-ecosystem: "pub"
+    directory: "/"
+    labels: ["type: dependencies"]
+    assignees: ["leonardocustodio"]
+    reviewers: ["leonardocustodio"]
+    schedule:
+      interval: "daily"
+
+  # Update node dependencies:
+  - package-ecosystem: "npm"
+    directories: ["./", "./docs"]
+    labels: ["type: dependencies"]
+    assignees: ["leonardocustodio"]
+    reviewers: ["leonardocustodio"]
+    schedule:
+      interval: "daily"

@@ -1,0 +1,17 @@
+analyzer:
+  errors:
+    unnecessary_library_name: ignore
+    unused_local_variable: ignore
+    use_string_in_part_of_directives: ignore
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    constant_identifier_names: false
+    overridden_fields: false
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_single_quotes: true
+
+formatter:
+  page_width: 100
